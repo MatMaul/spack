@@ -55,7 +55,7 @@ packages:
       - assimp ^boost@1.65.0
       - boost
       - brion
-      - deflect  ^boost@1.65.0
+      - deflect ~deflect-qt  ^boost@1.65.0
       - eigen
       - fmt
       - gmsh
