@@ -1,4 +1,4 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -7,7 +7,11 @@ import argparse
 
 import pytest
 import spack.cmd.find
+from spack.main import SpackCommand
 from spack.util.pattern import Bunch
+
+
+find = SpackCommand('find')
 
 
 @pytest.fixture(scope='module')
@@ -98,3 +102,12 @@ def test_tag2_tag3(parser, specs):
     spack.cmd.find.find(parser, args)
 
     assert len(specs) == 0
+
+
+@pytest.mark.db
+def test_namespaces_shown_correctly(database):
+    out = find()
+    assert 'builtin.mock.zmpi' not in out
+
+    out = find('--namespace')
+    assert 'builtin.mock.zmpi' in out

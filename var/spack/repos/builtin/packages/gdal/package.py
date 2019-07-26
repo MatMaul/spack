@@ -1,4 +1,4 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -18,7 +18,7 @@ class Gdal(AutotoolsPackage):
     """
 
     homepage   = "http://www.gdal.org/"
-    url        = "http://download.osgeo.org/gdal/2.3.1/gdal-2.3.1.tar.xz"
+    url        = "http://download.osgeo.org/gdal/3.0.0/gdal-3.0.0.tar.xz"
     list_url   = "http://download.osgeo.org/gdal/"
     list_depth = 1
 
@@ -29,6 +29,13 @@ class Gdal(AutotoolsPackage):
         'osgeo.gdal_array', 'osgeo.gdalconst'
     ]
 
+    version('3.0.1',  sha256='45b4ae25dbd87282d589eca76481c426f72132d7a599556470d5c38263b09266')
+    version('3.0.0',  sha256='ad316fa052d94d9606e90b20a514b92b2dd64e3142dfdbd8f10981a5fcd5c43e')
+    version('2.4.2',  sha256='dcc132e469c5eb76fa4aaff238d32e45a5d947dc5b6c801a123b70045b618e0c')
+    version('2.4.1',  sha256='fd51b4900b2fc49b98d8714f55fc8a78ebfd07218357f93fb796791115a5a1ad')
+    version('2.4.0',  sha256='c3791dcc6d37e59f6efa86e2df2a55a4485237b0a48e330ae08949f0cdf00f27')
+    version('2.3.3',  sha256='c3635e41766a648f945d235b922e3c5306e26a2ee5bbd730d2181e242f5f46fe')
+    version('2.3.2',  sha256='3f6d78fe8807d1d6afb7bed27394f19467840a82bc36d65e66316fa0aa9d32a4')
     version('2.3.1',  sha256='9c4625c45a3ee7e49a604ef221778983dd9fd8104922a87f20b99d9bedb7725a')
     version('2.3.0',  sha256='6f75e49aa30de140525ccb58688667efe3a2d770576feb7fbc91023b7f552aa2')
     version('2.1.2',  sha256='b597f36bd29a2b4368998ddd32b28c8cdf3c8192237a81b99af83cc17d7fa374')
@@ -71,6 +78,7 @@ class Gdal(AutotoolsPackage):
     variant('armadillo', default=False, description='Include Armadillo support for faster TPS transform computation')
     variant('cryptopp',  default=False, description='Include cryptopp support')
     variant('crypto',    default=False, description='Include crypto (from openssl) support')
+    variant('grib',      default=False, description='Include GRIB support')
 
     # FIXME: Allow packages to extend multiple packages
     # See https://github.com/spack/spack/issues/987
@@ -80,13 +88,15 @@ class Gdal(AutotoolsPackage):
     # GDAL depends on GNUmake on Unix platforms.
     # https://trac.osgeo.org/gdal/wiki/BuildingOnUnix
     depends_on('gmake', type='build')
-    depends_on('pkgconfig', type='build')
+    depends_on('pkgconfig@0.25:', type='build')
 
     # Required dependencies
     depends_on('libtiff@3.6.0:')  # 3.9.0+ needed to pass testsuite
     depends_on('libgeotiff@1.2.1:')
+    depends_on('libgeotiff@:1.4', when='@:2.4')
+    depends_on('libgeotiff@1.5:', when='@3:')
     depends_on('json-c', when='@2.3:')
-    depends_on('json-c@0.12.1', when='@:2.2.99')
+    depends_on('json-c@0.12.1', when='@:2.2')
 
     # Optional dependencies
     depends_on('libtool', type='build', when='+libtool')
@@ -118,7 +128,10 @@ class Gdal(AutotoolsPackage):
     depends_on('opencl', when='+opencl')
     depends_on('poppler', when='+poppler')
     depends_on('poppler@:0.63', when='@:2.3.0 +poppler')
-    depends_on('proj', when='+proj @2.3:')
+    depends_on('proj@:4', when='+proj @2.3.0:2.3.999')
+    depends_on('proj@:5', when='+proj @2.4.0:2.4.999')
+    depends_on('proj@:6', when='+proj @2.5:2.999')
+    depends_on('proj@6:', when='+proj @3:')
     depends_on('perl', type=('build', 'run'), when='+perl')
     depends_on('python', type=('build', 'link', 'run'), when='+python')
     # swig/python/setup.py
@@ -159,6 +172,28 @@ class Gdal(AutotoolsPackage):
             '--with-libjson-c={0}'.format(spec['json-c'].prefix),
         ]
 
+        # Optional dependencies
+        if spec.satisfies('@3:'):
+            args.extend([
+                '--disable-driver-bsb',
+                '--disable-driver-mrf',
+            ])
+
+            if '+grib' in spec:
+                args.append('--enable-driver-grib')
+            else:
+                args.append('--disable-driver-grib')
+        else:
+            args.append('--without-bsb')
+
+            if '+grib' in spec:
+                args.append('--with-grib=yes')
+            else:
+                args.append('--with-grib=no')
+
+            if spec.satisfies('@2.3:'):
+                args.append('--with-mrf=no')
+
         if spec.satisfies('@2.3:'):
             if '+zstd' in spec:
                 args.append('--with-zstd={0}'.format(spec['zstd'].prefix))
@@ -167,10 +202,6 @@ class Gdal(AutotoolsPackage):
 
             if '+proj' in spec:
                 args.append('--with-proj={0}'.format(spec['proj'].prefix))
-                if spec.satisfies('^proj@5.0:5.999'):
-                    args.append('--with-proj5-api=yes')
-                else:
-                    args.append('--with-proj5-api=no')
             else:
                 args.append('--with-proj=no')
 
@@ -198,7 +229,6 @@ class Gdal(AutotoolsPackage):
             else:
                 args.append('--with-kea=no')
 
-        # Optional dependencies
         if '+libtool' in spec:
             args.append('--with-libtool=yes')
         else:
@@ -393,10 +423,8 @@ class Gdal(AutotoolsPackage):
             '--with-mrsid_lidar=no',
             # https://trac.osgeo.org/gdal/wiki/MSG
             '--with-msg=no',
-            '--with-bsb=no',
             # https://trac.osgeo.org/gdal/wiki/Oracle
             '--with-oci=no',
-            '--with-grib=no',
             '--with-mysql=no',
             # https://trac.osgeo.org/gdal/wiki/Ingres
             '--with-ingres=no',
@@ -413,9 +441,12 @@ class Gdal(AutotoolsPackage):
             '--with-freexl=no',
             '--with-pam=no',
             '--with-podofo=no',
-            '--with-php=no',
             '--with-rasdaman=no',
         ])
+
+        # TODO: add packages for these dependencies (only for 2.3 and older)
+        if spec.satisfies('@:2.3'):
+            args.append('--with-php=no')
 
         # TODO: add packages for these dependencies (only for 2.3 and newer)
         if spec.satisfies('@2.3:'):
@@ -425,7 +456,6 @@ class Gdal(AutotoolsPackage):
                 # https://trac.osgeo.org/gdal/wiki/DxfDwg
                 '--with-teigha=no',
                 '--with-sfcgal=no',
-                '--with-mrf=no',
             ])
 
         # TODO: add packages for these dependencies (only for 2.1 and newer)

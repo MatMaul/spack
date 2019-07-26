@@ -1,4 +1,4 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -28,7 +28,7 @@ level = "short"
 
 
 package_template = '''\
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -393,6 +393,9 @@ def setup_parser(subparser):
     subparser.add_argument(
         '-f', '--force', action='store_true',
         help="overwrite any existing package file with the same name")
+    subparser.add_argument(
+        '--skip-editor', action='store_true',
+        help="skip the edit session for the package (e.g., automation)")
 
 
 class BuildSystemGuesser:
@@ -671,5 +674,6 @@ def create(parser, args):
     package.write(pkg_path)
     tty.msg("Created package file: {0}".format(pkg_path))
 
-    # Open up the new package file in your $EDITOR
-    editor(pkg_path)
+    # Optionally open up the new package file in your $EDITOR
+    if not args.skip_editor:
+        editor(pkg_path)

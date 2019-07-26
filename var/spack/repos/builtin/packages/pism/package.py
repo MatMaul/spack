@@ -1,4 +1,4 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -76,7 +76,7 @@ class Pism(CMakePackage):
     depends_on('netcdf')    # Only the C interface is used, no netcdf-cxx4
     depends_on('petsc')
     depends_on('udunits2')
-    depends_on('proj')
+    depends_on('proj@:4')
     depends_on('everytrace', when='+everytrace')
 
     extends('python', when='+python')

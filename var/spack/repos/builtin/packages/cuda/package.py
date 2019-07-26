@@ -1,10 +1,12 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 from spack import *
 from glob import glob
+from llnl.util.filesystem import LibraryList
+import os
 
 
 class Cuda(Package):
@@ -35,8 +37,11 @@ class Cuda(Package):
     version('6.5.14', '90b1b8f77313600cc294d9271741f4da', expand=False,
             url="http://developer.download.nvidia.com/compute/cuda/6_5/rel/installers/cuda_6.5.14_linux_64.run")
 
+    def setup_environment(self, spack_env, run_env):
+        run_env.set('CUDA_HOME', self.prefix)
+
     def install(self, spec, prefix):
-        runfile = glob(join_path(self.stage.path, 'cuda*_linux*'))[0]
+        runfile = glob(join_path(self.stage.source_path, 'cuda*_linux*'))[0]
         chmod = which('chmod')
         chmod('+x', runfile)
         runfile = which(runfile)
@@ -58,3 +63,16 @@ class Cuda(Package):
 
     def setup_dependent_environment(self, spack_env, run_env, dependent_spec):
         spack_env.prepend_path('LD_LIBRARY_PATH', self.spec.prefix.lib64)
+
+    @property
+    def libs(self):
+        libs = find_libraries('libcuda', root=self.prefix, shared=True,
+                              recursive=True)
+
+        filtered_libs = []
+        # CUDA 10.0 provides Compatability libraries for running newer versions
+        # of CUDA with older drivers. These do not work with newer drivers.
+        for lib in libs:
+            if 'compat' not in lib.split(os.sep):
+                filtered_libs.append(lib)
+        return LibraryList(filtered_libs)

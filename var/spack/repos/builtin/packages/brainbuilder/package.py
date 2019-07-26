@@ -26,7 +26,7 @@ class Brainbuilder(PythonPackage):
     depends_on('py-lxml@3.3:', type='run')
     depends_on('py-numpy@1.9:', type='run')
     depends_on('py-pandas@0.17:', type='run')
-    depends_on('py-pytables@3.4:', type='run')
+    depends_on('py-tables@3.4:', type='run')
     depends_on('py-pyyaml@1.0:', type='run')
     depends_on('py-scipy@0.13:', type='run')
     depends_on('py-six@1.0:', type='run')

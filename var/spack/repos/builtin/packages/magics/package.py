@@ -1,4 +1,4 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -55,7 +55,7 @@ class Magics(CMakePackage):
     depends_on('perl-xml-parser', type='build')
 
     # Non-optional dependencies
-    depends_on('proj')
+    depends_on('proj@:5')
     depends_on('boost')
     depends_on('expat')
 

@@ -19,6 +19,6 @@ class PyNeurotools(PythonPackage):
     depends_on('py-matplotlib', type='run')
     depends_on('py-urllib3', type='run')
     depends_on('py-mpi4py', type='run')
-    depends_on('py-pytables', type='run')
+    depends_on('py-tables', type='run')
     depends_on('py-pyaml', type='run')
     depends_on('py-rpy2', type='run')

@@ -1,9 +1,7 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
-
-from spack import *
 
 
 class OmegaH(CMakePackage):
@@ -14,24 +12,25 @@ class OmegaH(CMakePackage):
     """
 
     homepage = "https://github.com/SNLComputation/omega_h"
-    url      = "https://github.com/SNLComputation/omega_h/archive/v9.22.1.tar.gz"
+    url      = "https://github.com/SNLComputation/omega_h/archive/v9.13.4.tar.gz"
     git      = "https://github.com/SNLComputation/omega_h.git"
 
+    maintainers = ['ibaned']
+
     version('develop', branch='master')
-    version('9.26.3', sha256='91c0e585afe52007e78ce018f791fbc3e73b53ba77b68521446405dfd8e21b69')
-    version('9.25.4', sha256='9a9b26d5c4fc352776c1da02d787e653b5878c0cca3890eefebd3df202c75aed')
-    version('9.24.2', sha256='af084e56204262c2a7edcc9c88e997623fc1280ae59427b9bf2b57d11568b496')
+    version('9.27.0', sha256='aa51f83508cbd14a41ae953bda7da98a6ad2979465c76e5b3a3d9a7a651cb34a')
     version('9.22.2', sha256='ab5636be9dc171a514a7015df472bd85ab86fa257806b41696170842eabea37d')
-    version('9.21.1', sha256='750415614747681c0094d3103e7683c74edcd95819ef9477f2179c805c416cfa')
-    version('9.20.2', sha256='e1491969ccb170a92018a8b7d02f34b6177deffcbba74bc7c2ee862793a846c8')
     version('9.19.1', sha256='60ef65c2957ce03ef9d1b995d842fb65c32c5659d064de002c071effe66b1b1f')
-    version('9.18.1', sha256='333c93e28c56173afd2815274fa2bde25d361edc4a8a9a28f90c3a3e144512c3')
+    version('9.19.0', sha256='4a1606c4e7287a1b67359cf6ef1c2d7e24b7dc379065566a1d2e0b0330c0abbd')
+    version('9.15.0', sha256='342a506a0ff22f6cac759862efdcf34e360110f7901eb9b4c5de8afe38741522')
+    version('9.14.0', sha256='035d0f47142f965a57818d1cb6c5c00b5ae6b5a0178b67b0bc9177fa99ba083d')
+    version('9.13.14', sha256='f617dfd024c9cc323e56800ca23df3386bfa37e1b9bd378847d1f5d32d2b8e5d')
+    version('9.13.13', sha256='753702edf4bda9ae57ea21f09ca071e341604a468d8c86468c9aebba049f581c')
 
     variant('shared', default=True, description='Build shared libraries')
     variant('mpi', default=True, description='Activates MPI support')
     variant('zlib', default=True, description='Activates ZLib support')
-    variant('trilinos', default=False, description='Use Teuchos and Kokkos')
-    variant('build_type', default='')
+    variant('trilinos', default=True, description='Use Teuchos and Kokkos')
     variant('throw', default=False, description='Errors throw exceptions instead of abort')
     variant('examples', default=False, description='Compile examples')
     variant('optimize', default=True, description='Compile C++ with optimization')
@@ -44,7 +43,7 @@ class OmegaH(CMakePackage):
     depends_on('zlib', when='+zlib')
 
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=86610
-    conflicts('%gcc@8:')
+    conflicts('%gcc@8:8.2.99', when='@:9.22.1')
 
     def _bob_options(self):
         cmake_var_prefix = 'Omega_h_CXX_'
@@ -83,6 +82,8 @@ class OmegaH(CMakePackage):
             args.append('-DOmega_h_THROW:BOOL=ON')
         else:
             args.append('-DOmega_h_THROW:BOOL=OFF')
+        # omega-h requires empty CMAKE_BUILD_TYPE
+        args.append('-DCMAKE_BUILD_TYPE:STRING=')
         args += list(self._bob_options())
         return args
 

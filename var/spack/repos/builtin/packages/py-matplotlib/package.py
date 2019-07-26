@@ -1,4 +1,4 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -15,6 +15,7 @@ class PyMatplotlib(PythonPackage):
     homepage = "https://pypi.python.org/pypi/matplotlib"
     url      = "https://pypi.io/packages/source/m/matplotlib/matplotlib-2.0.2.tar.gz"
 
+    version('3.0.2', 'd6af3dfae557ea4046fef96cf617fa24')
     version('3.0.0', '39c7f44c8fa0f24cbf684137371ce4ae')
     # NOTE: 3.0.0 is not compatible with python 2
     version('2.2.3', '403b0bddd751d71187416f20d4cff100', preferred=True)
@@ -58,13 +59,15 @@ class PyMatplotlib(PythonPackage):
     patch('freetype-include-path.patch', when='@2.2.2:2.9.9')  # Patch to pick up correct freetype headers
 
     depends_on('py-numpy@1.6:', type=('build', 'run'))
-    depends_on('py-dateutil@1.1:', type=('build', 'run'))
+    depends_on('py-python-dateutil@1.1:', type=('build', 'run'))
     depends_on('py-pyparsing', type=('build', 'run'))
     depends_on('py-pytz', type=('build', 'run'))
     depends_on('py-cycler@0.9:', type=('build', 'run'))
     depends_on('py-subprocess32', type=('build', 'run'), when='^python@:2.7')
-    depends_on('py-functools32', type=('build', 'run'), when='^python@2.7')
+    depends_on('py-functools32', type=('build', 'run'), when='@:2.0.999 ^python@2.7')
     depends_on('py-kiwisolver', type=('build', 'run'), when='@2.2.0:')
+    depends_on('py-backports-functools-lru-cache', type=('build', 'run'),
+               when='@2.1.0:2.999.999^python@:3.4')
 
     # ------ Optional GUI frameworks
     depends_on('tk@8.3:', when='+tk')  # not 8.6.0 or 8.6.1

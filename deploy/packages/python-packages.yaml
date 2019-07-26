@@ -40,7 +40,6 @@ packages:
       - py-cycler
       - py-cython
       - py-cpuinfo
-      - py-dateutil
       - py-deap
       - py-decorator
       - py-docopt
@@ -95,6 +94,7 @@ packages:
       - py-pylru
       - py-pyspark
       - py-pytest
+      - py-python-dateutil
       - py-pyyaml
       - py-regex
       - py-requests

@@ -1,4 +1,4 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -16,6 +16,7 @@ import os
 import inspect
 import pstats
 import argparse
+import traceback
 from six import StringIO
 
 import llnl.util.tty as tty
@@ -330,6 +331,9 @@ def make_argument_parser(**kwargs):
         '-d', '--debug', action='store_true',
         help="write out debug logs during compile")
     parser.add_argument(
+        '--timestamp', action='store_true',
+        help="Add a timestamp to tty output")
+    parser.add_argument(
         '--pdb', action='store_true',
         help="run spack under the pdb debugger")
 
@@ -398,6 +402,9 @@ def setup_main_options(args):
         spack.error.debug = True
         spack.util.debug.register_interrupt_handler()
         spack.config.set('config:debug', True, scope='command_line')
+
+    if args.timestamp:
+        tty.set_timestamp(True)
 
     # override lock configuration if passed on command line
     if args.locks is not None:
@@ -499,6 +506,7 @@ class SpackCommand(object):
             self.returncode = e.code
 
         except BaseException as e:
+            tty.debug(e)
             self.error = e
             if fail_on_error:
                 raise
@@ -597,7 +605,8 @@ def print_setup_info(*info):
     # print environment module system if available. This can be expensive
     # on clusters, so skip it if not needed.
     if 'modules' in info:
-        specs = spack.store.db.query('environment-modules')
+        specs = spack.store.db.query(
+            'environment-modules arch=%s' % spack.architecture.sys_type())
         if specs:
             shell_set('_sp_module_prefix', specs[-1].prefix)
         else:
@@ -688,18 +697,23 @@ def main(argv=None):
             return _invoke_command(command, parser, args, unknown)
 
     except SpackError as e:
+        tty.debug(e)
         e.die()  # gracefully die on any SpackErrors
 
     except Exception as e:
         if spack.config.get('config:debug'):
             raise
-        tty.die(str(e))
+        tty.die(e)
 
     except KeyboardInterrupt:
+        if spack.config.get('config:debug'):
+            raise
         sys.stderr.write('\n')
         tty.die("Keyboard interrupt.")
 
     except SystemExit as e:
+        if spack.config.get('config:debug'):
+            traceback.print_exc()
         return e.code
 
 

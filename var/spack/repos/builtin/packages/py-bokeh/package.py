@@ -1,4 +1,4 @@
-# Copyright 2013-2018 Lawrence Livermore National Security, LLC and other
+# Copyright 2013-2019 Lawrence Livermore National Security, LLC and other
 # Spack Project Developers. See the top-level COPYRIGHT file for details.
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
@@ -18,7 +18,7 @@ class PyBokeh(PythonPackage):
     depends_on('py-six@1.5.2:',       type=('build', 'run'))
     depends_on('py-requests@1.2.3:',  type=('build', 'run'))
     depends_on('py-pyyaml@3.10:',     type=('build', 'run'))
-    depends_on('py-dateutil@2.1:',    type=('build', 'run'))
+    depends_on('py-python-dateutil@2.1:', type=('build', 'run'))
     depends_on('py-jinja2@2.7:',      type=('build', 'run'))
     depends_on('py-numpy@1.7.1:',     type=('build', 'run'))
     depends_on('py-tornado@4.3:',     type=('build', 'run'))
