@@ -87,12 +87,6 @@ def location(parser, args):
     else:
         specs = spack.cmd.parse_specs(args.spec)
 
-        if args.latest:
-            def install_date(s):
-                _, record = spack.store.db.query_by_spec_hash(s.dag_hash())
-                return record.installation_time
-            specs = sorted(specs, key=install_date, reverse=True)[:1]
-
         if not specs:
             tty.die("You must supply a spec.")
         if len(specs) != 1:
@@ -101,7 +95,16 @@ def location(parser, args):
         if args.install_dir:
             # install_dir command matches against installed specs.
             env = ev.get_env(args, 'location')
-            spec = spack.cmd.disambiguate_spec(specs[0], env)
+            specs = [spack.cmd.disambiguate_spec(spec, env) for spec in specs]
+
+            if args.latest:
+                def install_date(s):
+                    _, record = spack.store.db.query_by_spec_hash(s.dag_hash())
+                    return record.installation_time
+                specs = sorted(specs, key=install_date, reverse=True)
+
+            spec = specs[0]
+
             print(spec.prefix)
 
         else:
