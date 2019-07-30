@@ -24,12 +24,6 @@ def setup_parser(subparser):
     global directories
     directories = subparser.add_mutually_exclusive_group()
 
-    refresh_parser.add_argument(
-        '--latest',
-        help='use the last installed package when multiple ones match',
-        action='store_true'
-    )
-
     directories.add_argument(
         '-m', '--module-dir', action='store_true',
         help="spack python module directory")
@@ -59,6 +53,12 @@ def setup_parser(subparser):
     directories.add_argument(
         '-e', '--env', action='store',
         help="location of an environment managed by spack")
+
+    subparser.add_argument(
+        '--latest',
+        help='use the last installed package when multiple ones match',
+        action='store_true'
+    )
 
     subparser.add_argument(
         'spec', nargs=argparse.REMAINDER,
