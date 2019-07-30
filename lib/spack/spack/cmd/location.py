@@ -24,6 +24,12 @@ def setup_parser(subparser):
     global directories
     directories = subparser.add_mutually_exclusive_group()
 
+    refresh_parser.add_argument(
+        '--latest',
+        help='use the last installed package when multiple ones match',
+        action='store_true'
+    )
+
     directories.add_argument(
         '-m', '--module-dir', action='store_true',
         help="spack python module directory")
@@ -80,6 +86,13 @@ def location(parser, args):
 
     else:
         specs = spack.cmd.parse_specs(args.spec)
+
+        if args.latest:
+            def install_date(s):
+                _, record = spack.store.db.query_by_spec_hash(s.dag_hash())
+                return record.installation_time
+            specs = sorted(specs, key=install_date, reverse=True)[:1]
+
         if not specs:
             tty.die("You must supply a spec.")
         if len(specs) != 1:

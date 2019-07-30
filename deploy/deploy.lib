@@ -279,10 +279,10 @@ configure_compilers() {
         fi
 
         if [[ ${line} = *"intel"* ]]; then
-            GCC_DIR=$(spack location --install-dir gcc@6.4.0)
+            GCC_DIR=$(spack location --latest --install-dir gcc@6.4.0)
 
             # update intel modules to use gcc@6.4.0 in .cfg files
-            install_dir=$(spack location --install-dir ${line})
+            install_dir=$(spack location --latest --install-dir ${line})
             for f in $(find ${install_dir} -name "icc.cfg" -o -name "icpc.cfg" -o -name "ifort.cfg"); do
                 if ! grep -q "${GCC_DIR}" $f; then
                     echo "-gcc-name=${GCC_DIR}/bin/gcc" >> ${f}
