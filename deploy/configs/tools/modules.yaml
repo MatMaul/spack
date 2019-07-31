@@ -46,7 +46,7 @@ modules:
       - openmpi
       - osu-micro-benchmarks
       - stat
-      - 'valgrind@3.13.0'
+      - valgrind
     blacklist:
       - '%gcc'
       - '%intel'
