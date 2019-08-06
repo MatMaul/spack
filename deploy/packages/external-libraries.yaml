@@ -47,7 +47,7 @@ packages:
       - qt@5.11.2
       - readline@7.0
       - spark@2.4.0+hadoop
-      - sqlite@3.23.1
+      - sqlite@3.28.0
       - symengine@0.3.0
       - vrpn
       - zeromq@4.2.5
