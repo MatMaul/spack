@@ -22,21 +22,16 @@ class Mvdtool(CMakePackage):
     version('1.5', tag='v1.5')
     version('1.4', tag='v1.4')
 
-    variant('mpi', default=True, description="Enable MPI backend")
     variant('python', default=False, description="Enable Python bindings")
 
     depends_on('boost')
     depends_on('cmake', type='build')
     depends_on('py-setuptools-scm', type='build', when='@2:')
 
-    depends_on('hdf5+mpi', when='+mpi')
-    depends_on('hdf5~mpi', when='~mpi')
-    depends_on('highfive+mpi', when='+mpi')
-    depends_on('highfive~mpi', when='~mpi')
-    depends_on('mpi', when='+mpi')
+    depends_on('hdf5')
+    depends_on('highfive~mpi')
 
-    depends_on('libsonata+mpi', when='@2.1: +mpi')
-    depends_on('libsonata~mpi', when='@2.1: ~mpi')
+    depends_on('libsonata', when='@2.1:')
 
     depends_on('python', when='+python')
     depends_on('py-cython', when='+python')
@@ -44,11 +39,6 @@ class Mvdtool(CMakePackage):
 
     def cmake_args(self):
         args = []
-        if self.spec.satisfies('+mpi'):
-            args.extend([
-                '-DCMAKE_C_COMPILER:STRING={}'.format(self.spec['mpi'].mpicc),
-                '-DCMAKE_CXX_COMPILER:STRING={}'.format(self.spec['mpi'].mpicxx),
-            ])
         if self.spec.satisfies('+python'):
             args.extend([
                 '-DBUILD_PYTHON_BINDINGS:BOOL=ON'
