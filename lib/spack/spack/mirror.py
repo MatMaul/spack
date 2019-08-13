@@ -104,6 +104,7 @@ def get_matching_versions(specs, **kwargs):
         if spec.concrete:
             matching_spec.append(spec)
             pkg_versions -= 1
+            tty.msg("{0} :: {1}".format(spec.name, spec.version))
             version_order.remove(spec.version)
 
         for v in version_order:
