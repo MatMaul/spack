@@ -30,7 +30,7 @@ packages:
       - hdf5~mpi@1.10.4
       - highfive~mpi@2.0
       - intel-mkl@2018.1.163
-      - jdk@1.8.0_191-b12
+      - jdk@1.8.0_131-b11
       - julia
       - libjpeg@1.2.90
       - libjpeg-turbo@1.5.90
@@ -46,7 +46,7 @@ packages:
       - qhull@2015.2
       - qt@5.11.2
       - readline@7.0
-      - spark@2.4.0+hadoop
+      - spark@2.4.0+hadoop^jdk
       - sqlite@3.28.0
       - symengine@0.3.0
       - vrpn
