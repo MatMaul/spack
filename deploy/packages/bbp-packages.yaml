@@ -141,7 +141,10 @@ packages:
       - compiler
     specs:
       - neurodamus-core+common@2.7.0
+<<<<<<< HEAD
       - ultraliser
+=======
+>>>>>>> Update neuron, neurodamus packages and dependencies  (#510)
 
   intel-stable-parallel:
     target_matrix:
