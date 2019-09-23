@@ -595,7 +595,7 @@ EOF
     spack reindex && spack find -lv
 
     log "gathering specs"
-    spec_list=$(spack filter --not-installed $(< ${HOME}/specs.txt))
+    spec_list=$(spack --profile filter --not-installed $(< ${HOME}/specs.txt))
 
     # Only perform installation for actionable items
     if [[ -n "${spec_list}" ]]; then
@@ -642,7 +642,7 @@ EOF
     mkdir -p "${WORKSPACE:-.}/stacks"
     cp "${HOME}/stack.xml" "${WORKSPACE:-.}/stacks/${what}.xml"
 
-    spack module tcl refresh -y --delete-tree --latest --upstream-modules $(<${HOME}/specs.txt)
+    spack --profile module tcl refresh -y --delete-tree --latest --upstream-modules $(<${HOME}/specs.txt)
 
     . ${DEPLOYMENT_ROOT}/spack/share/spack/setup-env.sh
     if [[ "${export_packages[${what}]}" = "yes" ]]; then
