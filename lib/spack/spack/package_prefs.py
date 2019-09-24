@@ -25,8 +25,15 @@ def _spec_type(component):
     return _lesser_spec_types.get(component, spack.spec.Spec)
 
 
+_packages_config = None
+
+
 def get_packages_config():
     """Wrapper around get_packages_config() to validate semantics."""
+    global _packages_config
+    if _packages_config:
+        return _packages_config
+
     config = spack.config.get('packages')
 
     # Get a list of virtuals from packages.yaml.  Note that because we
@@ -42,6 +49,8 @@ def get_packages_config():
         raise VirtualInPackagesYAMLError(
             "packages.yaml entries cannot be virtual packages:",
             '\n'.join(errors))
+
+    _packages_config = config
 
     return config
 
