@@ -13,6 +13,7 @@ class Steps(CMakePackage):
     git      = "git@github.com:CNS-OIST/HBP_STEPS.git"
 
     version("develop", branch="master", submodules=True)
+    version("3.5.0a",  commit="1c8a5b0" submodules=True)
     version("3.4.1", submodules=True)
     version("3.3.0", submodules=True)
     version("3.2.0", submodules=True)
