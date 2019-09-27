@@ -35,6 +35,7 @@ packages:
       - py-entity-management@1.0.12
       - py-jupyter-notebook@4.2.3
       - brion@3.0.0 +python
+      - ultraliser
 
   gnu-stable-outdated:
     target_matrix:
