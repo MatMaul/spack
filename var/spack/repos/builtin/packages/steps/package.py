@@ -34,7 +34,7 @@ class Steps(CMakePackage):
     depends_on("py-gcovr", when="+coverage", type="build")
     depends_on("py-nose", type=("build", "test"))
     depends_on("py-numpy", type=("build", "test"))
-    depends_on("py-unittest2", type=("build", "test"))
+    depends_on("py-unittest2", type=("build", "run", "test"))
     depends_on("python")
 
     depends_on("easyloggingpp", when="~bundle")
