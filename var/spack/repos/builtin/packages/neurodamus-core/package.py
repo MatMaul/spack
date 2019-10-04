@@ -14,7 +14,6 @@ class NeurodamusCore(Package):
 
     version('develop', git=git, branch='master', clean=False)
     version('2.7.2', git=git, tag='2.7.2', clean=False)
-    version('2.7.1', git=git, tag='2.7.1', clean=False)
     version('2.7.0', git=git, tag='2.7.0', clean=False)
     version('2.6.0', git=git, tag='2.6.0', clean=False)
     version('2.5.0', git=git, tag='2.5.0', clean=False)
